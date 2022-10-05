@@ -115,7 +115,7 @@ void ParrallelRadixSort(uint64_t* array, size_t size, int segment_size) {
 
   segment_size = THREADS_PER_BLOCK;
 
-  unsigned int blocks = size / (segment_size * THREADS_PER_BLOCK);
+  unsigned int blocks = size / segment_size;
   if (size % segment_size != 0) blocks += 1;
 
   uint* d_count;
