@@ -10,10 +10,10 @@
 
 enum TestType { Compare = 0, Serial, Parallel };
 
-void RadixTest(uint64_t* array, size_t size, TestType type, int segment_size) {
+void RadixTest(uint* array, size_t size, TestType type, int segment_size) {
   Timer timer;
 
-  uint64_t* array_serial = new uint64_t[size];
+  uint* array_serial = new uint[size];
   std::copy(array, array + size, array_serial);
 
   if (type == TestType::Compare || type == TestType::Serial) {
@@ -51,14 +51,14 @@ void RadixTest(uint64_t* array, size_t size, TestType type, int segment_size) {
   delete array_serial;
 }
 
-void FillArrayRandom(uint64_t* array, size_t N) {
+void FillArrayRandom(uint* array, size_t N) {
   srand((uint)time(NULL));
   for (size_t i = 0; i < N; i++) {
     array[i] = rand() % 20;
   }
 }
 
-void FillArrayFromFile(uint64_t* array, size_t size, std::string input_file) {
+void FillArrayFromFile(uint* array, size_t size, std::string input_file) {
   std::ifstream file(input_file);
   int count = 0;
   if (file.is_open()) {
@@ -74,7 +74,7 @@ void FillArrayFromFile(uint64_t* array, size_t size, std::string input_file) {
   }
 }
 
-void FillArray(uint64_t* array, size_t size, std::string input_file) {
+void FillArray(uint* array, size_t size, std::string input_file) {
   if (input_file != "") {
     FillArrayFromFile(array, size, input_file);
   } else {
@@ -82,7 +82,7 @@ void FillArray(uint64_t* array, size_t size, std::string input_file) {
   }
 }
 
-void PrintArray(uint64_t* array, size_t N) {
+void PrintArray(uint* array, size_t N) {
   for (size_t i = 0; i < N; i++) {
     std::cout << array[i] << " ";
   }

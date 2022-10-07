@@ -83,7 +83,7 @@ void ProcessArgs(int argc, char** argv) {
     }
   }
 
-  uint64_t* array = new uint64_t[array_size];
+  uint* array = new uint[array_size];
 
   FillArray(array, array_size, input_file);
   RadixTest(array, array_size, test_type, block_size);

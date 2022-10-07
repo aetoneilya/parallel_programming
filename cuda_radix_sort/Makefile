@@ -10,7 +10,7 @@ EXECUTABLE=radix
 all: build
 
 build: src/main.cu src/radix.cu
-		$(NVCC) src/main.cu src/radix.cu $(CXXFLAGS) -o $(EXECUTABLE)
+		$(NVCC) src/main.cu src/radix.cu src/scan.cu $(CXXFLAGS) -o $(EXECUTABLE)
 
 clean:
 		rm -rf $(MAINOBJ) $(OBJ) $(EXECUTABLE)
