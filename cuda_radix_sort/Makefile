@@ -2,7 +2,6 @@ CXX=g++
 NVCC=nvcc
 # CXXFLAGS=-pedantic -Wall -Wextra -Wshadow -Wconversion -Wunreachable-code -std=c++11
 
-
 EXECUTABLE=radix
 
 .PHONY: all build clean rebuild

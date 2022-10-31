@@ -13,6 +13,7 @@ enum TestType { Compare = 0, Serial, Parallel };
 void RadixTest(uint* array, size_t size, TestType type, int segment_size) {
   Timer timer;
 
+  std::cout << "Array size: " << size << std::endl;
   uint* array_serial = new uint[size];
   std::copy(array, array + size, array_serial);
 
@@ -44,8 +45,10 @@ void RadixTest(uint* array, size_t size, TestType type, int segment_size) {
         break;
       }
     }
-    if (match) std::cout << "Success!\n";
-    else std::cout << "Arrays dont match!\n";
+    if (match)
+      std::cout << "Success!\n";
+    else
+      std::cout << "Arrays dont match!\n";
   }
 
   delete array_serial;
