@@ -44,7 +44,7 @@ void ProcessArgs(int argc, char** argv) {
   while (true) {
     const auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
 
-    if (-1 == opt) break;
+    if (opt == -1) break;
 
     switch (opt) {
       case 'c':
@@ -72,7 +72,7 @@ void ProcessArgs(int argc, char** argv) {
         flags.debug = true;
         break;
       case 'g':
-        // Generate data
+        flags.gen_file = std::string(optarg);
         break;
       case 'h':
       case '?':
@@ -82,10 +82,14 @@ void ProcessArgs(int argc, char** argv) {
     }
   }
 
+  if (flags.gen_file != "") {
+    GenerateInput(flags.gen_file, flags.array_size);
+  }
+
   uint* array = new uint[flags.array_size];
 
   FillArray(array, flags.array_size, flags.input_file);
-  RadixTest(array, array_size, flags);
+  RadixTest(array, flags);
 
   delete[] array;
   return;
