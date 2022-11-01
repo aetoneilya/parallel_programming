@@ -2,9 +2,6 @@
 
 #define MAX_BLOCK_SZ 128
 #define NUM_BANKS 32
-#define LOG_NUM_BANKS 5
-
-#define CONFLICT_FREE_OFFSET(n) ((n) >> LOG_NUM_BANKS)
 
 __global__ void gpu_add_block_sums(unsigned int* const d_out,
                                    const unsigned int* const d_in,
@@ -34,15 +31,14 @@ __global__ void gpu_prescan(unsigned int* const d_out,
 
   s_out[thid] = 0;
   s_out[thid + blockDim.x] = 0;
-  s_out[thid + blockDim.x + (blockDim.x >> LOG_NUM_BANKS)] = 0;
+  s_out[thid + blockDim.x + (blockDim.x)] = 0;
 
   __syncthreads();
 
   unsigned int cpy_idx = max_elems_per_block * blockIdx.x + threadIdx.x;
   if (cpy_idx < len) {
-    s_out[ai + CONFLICT_FREE_OFFSET(ai)] = d_in[cpy_idx];
-    if (cpy_idx + blockDim.x < len)
-      s_out[bi + CONFLICT_FREE_OFFSET(bi)] = d_in[cpy_idx + blockDim.x];
+    s_out[ai + ai] = d_in[cpy_idx];
+    if (cpy_idx + blockDim.x < len) s_out[bi + bi] = d_in[cpy_idx + blockDim.x];
   }
 
   int offset = 1;
@@ -52,8 +48,8 @@ __global__ void gpu_prescan(unsigned int* const d_out,
     if (thid < d) {
       int ai = offset * ((thid << 1) + 1) - 1;
       int bi = offset * ((thid << 1) + 2) - 1;
-      ai += CONFLICT_FREE_OFFSET(ai);
-      bi += CONFLICT_FREE_OFFSET(bi);
+      ai += ai;
+      bi += bi;
 
       s_out[bi] += s_out[ai];
     }
@@ -62,10 +58,8 @@ __global__ void gpu_prescan(unsigned int* const d_out,
 
   if (thid == 0) {
     d_block_sums[blockIdx.x] =
-        s_out[max_elems_per_block - 1 +
-              CONFLICT_FREE_OFFSET(max_elems_per_block - 1)];
-    s_out[max_elems_per_block - 1 +
-          CONFLICT_FREE_OFFSET(max_elems_per_block - 1)] = 0;
+        s_out[max_elems_per_block - 1 + max_elems_per_block - 1];
+    s_out[max_elems_per_block - 1 + max_elems_per_block - 1] = 0;
   }
 
   for (int d = 1; d < max_elems_per_block; d <<= 1) {
@@ -75,8 +69,8 @@ __global__ void gpu_prescan(unsigned int* const d_out,
     if (thid < d) {
       int ai = offset * ((thid << 1) + 1) - 1;
       int bi = offset * ((thid << 1) + 2) - 1;
-      ai += CONFLICT_FREE_OFFSET(ai);
-      bi += CONFLICT_FREE_OFFSET(bi);
+      ai += ai;
+      bi += bi;
 
       unsigned int temp = s_out[ai];
       s_out[ai] = s_out[bi];
@@ -86,9 +80,9 @@ __global__ void gpu_prescan(unsigned int* const d_out,
   __syncthreads();
 
   if (cpy_idx < len) {
-    d_out[cpy_idx] = s_out[ai + CONFLICT_FREE_OFFSET(ai)];
+    d_out[cpy_idx] = s_out[ai + ai];
     if (cpy_idx + blockDim.x < len)
-      d_out[cpy_idx + blockDim.x] = s_out[bi + CONFLICT_FREE_OFFSET(bi)];
+      d_out[cpy_idx + blockDim.x] = s_out[bi + bi];
   }
 }
 
@@ -102,8 +96,7 @@ void sum_scan_blelloch(unsigned int* const d_out,
   unsigned int grid_sz = numElems / max_elems_per_block;
   if (numElems % max_elems_per_block != 0) grid_sz += 1;
 
-  unsigned int shmem_sz =
-      max_elems_per_block + ((max_elems_per_block) >> LOG_NUM_BANKS);
+  unsigned int shmem_sz = max_elems_per_block + ((max_elems_per_block));
 
   unsigned int* d_block_sums;
   checkCudaErrors(cudaMalloc(&d_block_sums, sizeof(unsigned int) * grid_sz));

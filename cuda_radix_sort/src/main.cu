@@ -5,7 +5,6 @@
 */
 
 #include <getopt.h>
-// #include <string.h>
 #include <unistd.h>
 
 #include "radix_test.h"
@@ -27,23 +26,20 @@ void PrintHelp() {
 }
 
 void ProcessArgs(int argc, char** argv) {
-  const char* const short_opts = "cspb:a:i:o:g:h";
+  const char* const short_opts = "cspb:a:i:odg:h";
   const option long_opts[] = {{"compare", no_argument, nullptr, 'c'},
                               {"serial", no_argument, nullptr, 's'},
                               {"parallel", no_argument, nullptr, 'p'},
                               {"block", required_argument, nullptr, 'b'},
                               {"arraySize", required_argument, nullptr, 'a'},
                               {"inputFile", required_argument, nullptr, 'i'},
-                              {"outputFile", required_argument, nullptr, 'o'},
+                              {"outputSave", no_argument, nullptr, 'o'},
+                              {"debug", no_argument, nullptr, 'd'},
                               {"genInput", required_argument, nullptr, 'g'},
                               {"help", no_argument, nullptr, 'h'},
                               {nullptr, no_argument, nullptr, 0}};
 
-  TestType test_type = TestType::Compare;
-  size_t block_size = 128;
-  size_t array_size = 100000000;
-  std::string input_file;
-  std::string output_file;
+  TestFlags flags;
 
   while (true) {
     const auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
@@ -52,25 +48,28 @@ void ProcessArgs(int argc, char** argv) {
 
     switch (opt) {
       case 'c':
-        test_type = TestType::Compare;
+        flags.test_type = TestType::Compare;
         break;
       case 's':
-        test_type = TestType::Serial;
+        flags.test_type = TestType::Serial;
         break;
       case 'p':
-        test_type = TestType::Parallel;
+        flags.test_type = TestType::Parallel;
         break;
       case 'b':
-        block_size = std::stoi(optarg);
+        flags.block_size = std::stoi(optarg);
         break;
       case 'a':
-        array_size = atoll(optarg);
+        flags.array_size = atoll(optarg);
         break;
       case 'i':
-        input_file = std::string(optarg);
+        flags.input_file = std::string(optarg);
         break;
       case 'o':
-        output_file = std::string(optarg);
+        flags.out_save = true;
+        break;
+      case 'd':
+        flags.debug = true;
         break;
       case 'g':
         // Generate data
@@ -83,10 +82,10 @@ void ProcessArgs(int argc, char** argv) {
     }
   }
 
-  uint* array = new uint[array_size];
+  uint* array = new uint[flags.array_size];
 
-  FillArray(array, array_size, input_file);
-  RadixTest(array, array_size, test_type, block_size);
+  FillArray(array, flags.array_size, flags.input_file);
+  RadixTest(array, array_size, flags);
 
   delete[] array;
   return;

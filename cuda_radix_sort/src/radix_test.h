@@ -10,8 +10,18 @@
 
 enum TestType { Compare = 0, Serial, Parallel };
 
-void RadixTest(uint* array, size_t size, TestType type, int segment_size) {
+struct TestFlags {
+  TestType test_type = TestType::Compare;
+  size_t block_size = 128;
+  size_t array_size = 100000000;
+  std::string input_file;
+  bool out_save = false;
+  bool debug = false;
+};
+
+void RadixTest(uint* array, size_t size, TestFlags flags) {
   Timer timer;
+  TestType type = flags.test_type;
 
   std::cout << "Array size: " << size << std::endl;
   uint* array_serial = new uint[size];
@@ -30,7 +40,7 @@ void RadixTest(uint* array, size_t size, TestType type, int segment_size) {
   if (type == TestType::Compare || type == TestType::Parallel) {
     timer.Start();
     // PrintArray(array, size);
-    ParrallelRadixSort(array, size, segment_size);
+    ParrallelRadixSort(array, size, flags.block_size);
     timer.End();
     std::cout << "Parralel : " << timer.GetSecond() << " " << timer.GetNanosec()
               << std::endl;
