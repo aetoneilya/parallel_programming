@@ -30,7 +30,7 @@ void RadixTest(uint* array, TestFlags flags) {
   uint* array_serial = new uint[size];
   std::copy(array, array + size, array_serial);
 
-  if (flags.debug) {
+  if (flags.debug && flags.test_type == TestType::Compare) {
     std::cout << "Debug ON:" << std::endl
               << "Input data saved in parralel_input_array.txt and "
                  "serial_input_array.txt"
@@ -71,6 +71,9 @@ void RadixTest(uint* array, TestFlags flags) {
     bool match = true;
     for (size_t i = 0; i < size; i++) {
       if (array[i] != array_serial[i]) {
+        std::cout << "parallel[" << i << "] = " << array[i]
+                  << " is not equal serial[" << i << "] = " << array_serial[i]
+                  << std::endl;
         match = false;
         break;
       }
@@ -81,12 +84,16 @@ void RadixTest(uint* array, TestFlags flags) {
       std::cout << "Arrays dont match!\n";
   }
 
-  if (flags.debug) {
-    std::cout << "Output data saved in parralel_output_array.txt and "
-                 "serial_output_array.txt"
-              << std::endl;
-    SaveArray(array, size, "parralel_output_array.txt");
-    SaveArray(array_serial, size, "serial_output_array.txt");
+  if (flags.debug || flags.out_save) {
+    std::cout << "Output data saved" << std::endl;
+
+    if (flags.test_type == TestType::Compare ||
+        flags.test_type == TestType::Parallel)
+      SaveArray(array, size, "parralel_output_array.txt");
+
+    if (flags.test_type == TestType::Compare ||
+        flags.test_type == TestType::Serial)
+      SaveArray(array_serial, size, "serial_output_array.txt");
   }
 
   delete[] array_serial;

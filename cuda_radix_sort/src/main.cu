@@ -18,7 +18,8 @@ void PrintHelp() {
       "--block <val>:        Set size of parrallel block\n"
       "--arraySize <val>:    Set size of array\n"
       "--inputFile <fname>:  File with input data\n"
-      "--outputFile <fname>: File to save the result \n"
+      "--outputSave:         Save results to file\n"
+      "--debug:              save input and output files for debug\n"
       "--genInput <fname>:   Generate random input file\n"
       "--help:               Show help\n");
 
