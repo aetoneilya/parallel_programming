@@ -1,5 +1,5 @@
-#ifndef CUDA_RADIX_SORT_TIMER_H_
-#define CUDA_RADIX_SORT_TIMER_H_
+#ifndef SORT_TIMER_H_
+#define SORT_TIMER_H_
 
 #include <time.h>
 
@@ -22,4 +22,4 @@ class Timer {
   struct timespec start_, end_;
 };
 
-#endif  // CUDA_RADIX_SORT_TIMER_H_
+#endif  // SORT_TIMER_H_

@@ -148,7 +148,7 @@ __global__ void gpu_glbl_shuffle(unsigned int* d_out, unsigned int* d_in,
 }
 
 void ParrallelRadixSort(uint* array, size_t size, int segment_size) {
-  unsigned int block_sz = THREADS_PER_BLOCK;
+  unsigned int block_sz = segment_size;
   unsigned int max_elems_per_block = block_sz;
   unsigned int grid_sz = size / max_elems_per_block;
   if (size % max_elems_per_block != 0) grid_sz += 1;
