@@ -6,8 +6,8 @@
 #include "common/timer.h"
 
 void StartTimeTestSerial() {
-  int n = 0;
-  int k = 0;
+  size_t n = 0;
+  size_t k = 0;
   std::cout << "Введите N: ";
   std::cin >> n;
   std::cout << "Введите k: ";
@@ -26,8 +26,8 @@ void StartTimeTestSerial() {
   t.End();
 
   std::cout << n << " = " << pl.first_;
-  int tmp = pl.first_;
-  for (int i = 1; i < k; i++) {
+  size_t tmp = pl.first_;
+  for (size_t i = 1; i < k; i++) {
     tmp = NextPrime(tmp);
     std::cout << " + " << tmp;
   }

@@ -17,7 +17,6 @@ void PrintHelp() {
       "and parallel implementations\n"
       "--serial:             Runs serial implementations\n"
       "--parallel:           Runs parallel implementations\n"
-      "--wgs <val>:          Set size of work group\n"
       "--N <val>:            Set size of N\n"
       "--outputSave:         Save results to file\n"
       "--help:               Show help\n");
@@ -32,7 +31,6 @@ void ProcessArgs(int argc, char** argv) {
                               {"parallel", no_argument, nullptr, 'p'},
                               {"wgs", required_argument, nullptr, 'w'},
                               {"N", required_argument, nullptr, 'n'},
-                              {"inputFile", required_argument, nullptr, 'i'},
                               {"outputSave", no_argument, nullptr, 'o'},
                               {"help", no_argument, nullptr, 'h'},
                               {nullptr, no_argument, nullptr, 0}};

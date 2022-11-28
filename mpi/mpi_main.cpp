@@ -13,8 +13,8 @@ int main(int argc, char **argv) {
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  int n = 0;
-  int k = 0;
+  size_t n = 0;
+  size_t k = 0;
   if (rank == 0) {
     std::cout << "Введите N: ";
     std::cin >> n;
@@ -32,8 +32,8 @@ int main(int argc, char **argv) {
   if (rank == 0) t.Start();
 
   n = NextPrime(n, rank + 1);
-  int result = 2147483640;
-  int g_min_result = 2147483640;
+  size_t result = 2147483640;
+  size_t g_min_result = 2147483640;
 
   bool flag = true;
   while (flag) {
@@ -58,13 +58,12 @@ int main(int argc, char **argv) {
     result = g_min_result;
     t.End();
 
-    std::cout << result << " = " << pl.first_;
-
     pl.Init(0, k);
     while (pl.sum_ < result) pl.Next();
 
-    int tmp = pl.first_;
-    for (int i = 1; i < k; i++) {
+    std::cout << result << " = " << pl.first_;
+    size_t tmp = pl.first_;
+    for (size_t i = 1; i < k; i++) {
       tmp = NextPrime(tmp);
       std::cout << " + " << tmp;
     }

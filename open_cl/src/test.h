@@ -16,6 +16,15 @@ struct TestFlags {
   bool out_save = false;
 };
 
+void outSequence(size_t n) {
+  std::cout << "N: " << n << " len: " << sequenceLen(n) << std::endl;
+  while (n > 1) {
+    std::cout << n << "->";
+    n = n % 2 == 0 ? n / 2 : 3 * n + 1;
+  }
+  std::cout << n << std::endl;
+}
+
 void startTimeTest(TestFlags flags) {
   Timer timer;
   TestType type = flags.test_type;
@@ -61,26 +70,7 @@ void startTimeTest(TestFlags flags) {
       std::cout << "Result dont match!\n";
   }
 
-  //   if (flags.debug || flags.out_save) {
-  //     std::cout << "Output data saved" << std::endl;
-
-  //     if (flags.test_type == TestType::Compare ||
-  //         flags.test_type == TestType::Parallel)
-  //       SaveArray(array, size, "parralel_output_array.txt");
-
-  //     if (flags.test_type == TestType::Compare ||
-  //         flags.test_type == TestType::Serial)
-  //       SaveArray(array_serial, size, "serial_output_array.txt");
-  //   }
+  if (flags.out_save) outSequence(serial_res);
 };
-
-  // void outSequence(size_t n, std::string file_name) {
-  //   std::ofstream out(file_name);
-  //   while (n > 1) {
-  //     out << n << "->";
-  //     n = n % 2 == 0 ? n / 2 : 3 * n + 1;
-  //   }
-  //   out << n << std::endl;
-  // }
 
 #endif
